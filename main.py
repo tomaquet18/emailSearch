@@ -1,7 +1,6 @@
 import argparse
 from google_scraper import extract_mails
-import itertools
-import sys
+import os
 
 SEPARATORS = [".", "-", ""]
 SPECIAL_CHARS = [".", "-", "!", "#", "$", "%", "&", "'", "*", "+", "-", "/", "=", "?", "^", "_", "`", "{", "|", "}", "~"]
@@ -59,6 +58,22 @@ def extract_separators(emails):
         return SEPARATORS
     return separators_list
 
+def save_result(domain, found_emails, generated_emails):
+    if not os.path.exists("./results/"):
+        os.mkdir("./results")
+    if not os.path.exists("./results/" + domain + "/"):
+        os.mkdir("./results/" + domain)
+    if not found_emails == None:
+        with open("./results/" + domain + "/found_emails.txt", "w") as f:
+            for email in found_emails:
+                f.write(email + "\n")
+            f.close()
+
+    with open("./results/" + domain + "/generated_emails.txt", "w") as f:
+            for email in generated_emails:
+                f.write(email + "\n")
+            f.close()
+            
 def main():
     # Get parameters
     name, lastname, domain = get_parameters()
@@ -85,6 +100,7 @@ def main():
         print("\nGenerated emails using default list of separators:")
     print_results(combinations)
 
+    save_result(domain, found_emails, combinations)
 
 if __name__ == "__main__":
     banner()
